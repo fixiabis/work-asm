@@ -19,26 +19,85 @@
             background: #1e1e1e;
         }
 
-        .mtk1 { color: #d4d4d4; }
-        .mtk2 { color: #1e1e1e; }
-        .mtk3 { color: #6796e6; }
-        .mtk4 { color: #6a9955; }
-        .mtk5 { color: #569cd6; }
-        .mtk6 { color: #d16969; }
-        .mtk7 { color: #d7ba7d; }
-        .mtk8 { color: #b5cea8; }
-        .mtk9 { color: #ce9178; }
-        .mtk10 { color: #646695; }
-        .mtk11 { color: #4ec9b0; }
-        .mtk12 { color: #dcdcaa; }
-        .mtk13 { color: #9cdcfe; }
-        .mtk14 { color: #000080; }
-        .mtk15 { color: #f44747; }
-        .mtk16 { color: #c586c0; }
-        .mtk17 { color: #d4d4d4; }
-        .mtk18 { color: #808080; }
-        .mtk19 { color: #b267e6; }
-        .mtk20 { color: #cd9731; }
+        .mtk1 {
+            color: #d4d4d4;
+        }
+
+        .mtk2 {
+            color: #1e1e1e;
+        }
+
+        .mtk3 {
+            color: #6796e6;
+        }
+
+        .mtk4 {
+            color: #6a9955;
+        }
+
+        .mtk5 {
+            color: #569cd6;
+        }
+
+        .mtk6 {
+            color: #d16969;
+        }
+
+        .mtk7 {
+            color: #d7ba7d;
+        }
+
+        .mtk8 {
+            color: #b5cea8;
+        }
+
+        .mtk9 {
+            color: #ce9178;
+        }
+
+        .mtk10 {
+            color: #646695;
+        }
+
+        .mtk11 {
+            color: #4ec9b0;
+        }
+
+        .mtk12 {
+            color: #dcdcaa;
+        }
+
+        .mtk13 {
+            color: #9cdcfe;
+        }
+
+        .mtk14 {
+            color: #000080;
+        }
+
+        .mtk15 {
+            color: #f44747;
+        }
+
+        .mtk16 {
+            color: #c586c0;
+        }
+
+        .mtk17 {
+            color: #d4d4d4;
+        }
+
+        .mtk18 {
+            color: #808080;
+        }
+
+        .mtk19 {
+            color: #b267e6;
+        }
+
+        .mtk20 {
+            color: #cd9731;
+        }
 
         span.selected {
             background: rgba(255, 255, 255, 0.2);
@@ -49,8 +108,9 @@
             width: 280px;
             height: 100px;
             position: fixed;
-            top: 0px;
-            right: 0px;
+            top: 10px;
+            right: 10px;
+            padding: 5px;
             background: rgba(255, 255, 255, 0.1);
         }
 
@@ -71,19 +131,19 @@
         }
 
         div.n-t {
-            border-bottom: solid brown 5px;
+            border-bottom: solid rgba(165, 42, 42, 0.4) 5px;
         }
 
         div.n-b {
-            border-top: solid brown 5px;
+            border-top: solid rgba(165, 42, 42, 0.4) 5px;
         }
 
         div.n-r {
-            border-left: solid brown 5px;
+            border-left: solid rgba(165, 42, 42, 0.4) 5px;
         }
 
         div.n-l {
-            border-right: solid brown 5px;
+            border-right: solid rgba(165, 42, 42, 0.4) 5px;
         }
 
         #number1,
@@ -107,7 +167,7 @@
 </head>
 
 <body>
-    <pre class="source">    <span>ORG</span>        <span class="mtk8">0000H</span>
+    <pre class="source">    <span>ORG</span>     <span class="mtk8">0000H</span>
 
 <span>INIT</span>:
     <span class="mtk5">MOV</span>     <span class="mtk13">DPTR</span>,<span class="mtk5">#NUMBER_APPEARANCE_TABLE</span>
@@ -287,6 +347,35 @@
             <div class="n-b" style="top: 90px; left: 10px;"></div>
         </div>
     </div>
+    <script>
+        var spans = document.querySelectorAll("span");
+        var steps = [];
+        for (var spanIndex = 0; spanIndex < 8; spanIndex++) steps.push({ spanIndex });
+        for (var spanIndex = 10; spanIndex < 21; spanIndex++) steps.push({ spanIndex });
+        for (var spanIndex = 28; spanIndex < 41; spanIndex++) steps.push({ spanIndex });
+        for (var spanIndex = 72; spanIndex < 76; spanIndex++) steps.push({ spanIndex });
+
+        for (var i = 0; i < 10; i++) {
+            for (var spanIndex = 76; spanIndex < 80; spanIndex++)
+                steps.push({ spanIndex });
+    
+            for (var j = 0; j < 200; j++)
+                for (var spanIndex = 80; spanIndex < 84; spanIndex++)
+                    steps.push({ spanIndex });
+        }
+
+        function goStep(stepIndex) {
+            if (!steps[stepIndex]) return;
+            Array.prototype.forEach.bind(spans)(
+                e => e.classList.remove("selected")
+            );
+            spans[steps[stepIndex].spanIndex].classList.add("selected");
+        }
+
+        var stepNowIndex = 0;
+
+        setInterval(() => goStep(stepNowIndex++), 50);
+    </script>
 </body>
 
 </html>
