@@ -610,7 +610,7 @@
 
             if (step.lightb != undefined) {
                 Array.prototype.forEach.bind(nums)(
-                    el => el.style.backgroundColor = ""
+                    el => el.style.backgroundColor = el.className = ""
                 );
 
                 step.lightb.forEach(
