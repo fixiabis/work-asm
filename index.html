@@ -293,7 +293,7 @@
 <span>SHOW_NUMBER</span>:
     <span class="mtk5">MOV</span>     <span class="mtk13">R2</span>,<span class="mtk5">#10</span>
 
-    <span>SHOW_NUMBER_CYCLE</span>:
+    <span>SHOW_NUMBER_CYCLE</span>: <span class="mtk4">; 維持顯示, 讓倒數速度不會那麼快</span>
         <span class="mtk5">MOV</span>     <span class="mtk13">P1</span>,<span class="mtk5">#11110011B</span>
         <span class="mtk5">MOV</span>     <span class="mtk13">P0</span>,<span class="mtk5">#0C0H</span>
         <span class="mtk16">ACALL</span>   <span>DELAY</span>
@@ -323,23 +323,23 @@
     <span class="mtk16">RET</span>
 
 <span>NUMBER_APPEARANCE_TABLE</span>:
-    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">0F9H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">0A4H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">0B0H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">099H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">092H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">082H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">0F8H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">080H</span>
-    <span class="mtk11">DB</span>      <span class="mtk8">090H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span> <span class="mtk4">; 可忽略此項, 資料從1開始取得</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span> <span class="mtk4">; 0</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0F9H</span> <span class="mtk4">; 1</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0A4H</span> <span class="mtk4">; 2</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0B0H</span> <span class="mtk4">; 3</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">099H</span> <span class="mtk4">; 4</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">092H</span> <span class="mtk4">; 5</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">082H</span> <span class="mtk4">; 6</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0F8H</span> <span class="mtk4">; 7</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">080H</span> <span class="mtk4">; 8</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">090H</span> <span class="mtk4">; 9</span>
 
 <span>SOUND</span>:
-    <span>CLR</span>     <span class="mtk13">P2.6</span>
+    <span class="mtk5">CLR</span>     <span class="mtk13">P2.6</span>
     <span class="mtk16">ACALL</span>   <span>VOICE</span>
     
-    <span>SETB</span>     <span class="mtk13">P2.6</span>
+    <span class="mtk5">SETB</span>     <span class="mtk13">P2.6</span>
     <span class="mtk16">ACALL</span>   <span>VOICE</span>
 
     <span class="mtk16">DJNZ</span>    <span class="mtk13">R5</span>,<span>SOUND</span>
@@ -691,10 +691,9 @@
 
                 case 27:
                     e.preventDefault();
-
                     steps = steps.filter(step => step.light);
-
                     break;
+
                 default:
                     console.log(e.which);
             }
