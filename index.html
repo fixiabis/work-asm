@@ -323,17 +323,17 @@
     <span class="mtk16">RET</span>
 
 <span>NUMBER_APPEARANCE_TABLE</span>:
-    <span class="mtk11">DB</span>    <span class="mtk8">0C0H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">0C0H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">0F9H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">0A4H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">0B0H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">099H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">092H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">082H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">0F8H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">080H</span>
-    <span class="mtk11">DB</span>    <span class="mtk8">090H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0C0H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0F9H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0A4H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0B0H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">099H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">092H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">082H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">0F8H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">080H</span>
+    <span class="mtk11">DB</span>      <span class="mtk8">090H</span>
 
 <span>SOUND</span>:
     <span>CLR</span>     <span class="mtk13">P2.6</span>
@@ -453,11 +453,21 @@
         var spans = document.querySelectorAll("span");
         var steps = [];
         var nums = document.querySelectorAll(".number>div");
+        var NUMBER_APPEARANCE_TABLE = [
+            "0C0H", "0F9H", "0A4H", "0B0H", "099H",
+            "092H", "082H", "0F8H", "080H", "090H"
+        ];
 
         Array.prototype.forEach.bind(spans)((el, i) => {
             var elI = document.createElement("i");
             el.appendChild(elI);
-            el.addEventListener("click", () => console.log(i))
+            el.addEventListener("click", function() {
+                console.log(i);
+                for (var stepIndex = stepNowIndex; stepIndex < steps.length; stepIndex++) {
+                    goStep(++stepNowIndex);
+                    if (steps[stepNowIndex].spanIndex == i) break;
+                }
+            });
         });
 
         INIT: for (let spanIndex = 0; spanIndex < 8; spanIndex++) {
@@ -495,15 +505,21 @@
 
                     for (let spanIndex = 21; spanIndex < 24; spanIndex++) {
                         steps.push({ spanIndex });
+
+                        if (spanIndex == 22)
+                            steps.push({ spanIndex: 17, spanInfo: ` = ${j - 1}` });
                     }
                 }
 
                 for (let spanIndex = 24; spanIndex < 27; spanIndex++) {
                     steps.push({ spanIndex });
+
+                    if (spanIndex == 25)
+                        steps.push({ spanIndex: 13, spanInfo: ` = ${i - 1}` });
                 }
             }
 
-            steps.push({ spanIndex: 27 });
+            return steps.push({ spanIndex: 27 });
         }
 
         function SHOW_NUMBER(a, b) {
@@ -525,20 +541,45 @@
 
                 for (let spanIndex = 41; spanIndex < 55; spanIndex++) {
                     if (spanIndex == 43)
-                        steps.push({ spanIndex, lightb: [2] })
+                        steps.push({ spanIndex, lightb: [2] });
                     else if (spanIndex == 52)
-                        steps.push({ spanIndex, light: { b: [2], n: a } })
+                        steps.push({ spanIndex, light: { b: [2], n: a } });
+                    else if (spanIndex == 46)
+                        steps.push({ spanIndex });
                     else
                         steps.push({ spanIndex });
+
+                    if (spanIndex == 46)
+                        steps.push({ spanIndex, spanInfo: ` = ${a}` });
+
+                    if (spanIndex == 49)
+                        steps.push({
+                            spanIndex, spanInfo: ` = ${
+                                NUMBER_APPEARANCE_TABLE[a - 1]
+                                }`
+                        });
                 }
 
                 for (let spanIndex = 55; spanIndex < 72; spanIndex++) {
                     if (spanIndex == 57)
                         steps.push({ spanIndex, lightb: [3] })
                     else if (spanIndex == 66)
-                        steps.push({ spanIndex, light: { b: [3], n: b } })
+                        steps.push({ spanIndex, light: { b: [3], n: b } });
                     else
                         steps.push({ spanIndex });
+
+                    if (spanIndex == 60)
+                        steps.push({ spanIndex, spanInfo: ` = ${b}` });
+
+                    if (spanIndex == 63)
+                        steps.push({
+                            spanIndex, spanInfo: ` = ${
+                                NUMBER_APPEARANCE_TABLE[b - 1]
+                                }`
+                        });
+
+                    if (spanIndex == 70)
+                        steps.push({ spanIndex: 31, spanInfo: ` = ${i - 1}` });
                 }
             }
 
@@ -576,7 +617,10 @@
 
         function FINISH() {
             for (let spanIndex = 137; spanIndex < 160; spanIndex++) {
-                steps.push({ spanIndex });
+                if (spanIndex == 156)
+                    steps.push({ spanIndex, lightb: [0, 1, 2, 3] });
+                else
+                    steps.push({ spanIndex });
             }
 
             steps.push({ spanIndex: 159, light: { b: [0, 1, 2, 3], n: 1 } });
@@ -624,17 +668,35 @@
         }
 
         var stepNowIndex = 0;
+        var stepTimer;
 
         window.addEventListener("keydown", function (e) {
             switch (e.which) {
                 case 13:
-                    stepNowIndex = 0;
-                    setInterval(() => goStep(stepNowIndex++), 1);
+                    if (stepTimer == undefined) {
+                        stepTimer = setInterval(
+                            () => goStep(stepNowIndex++), 1
+                        );
+                    } else {
+                        clearInterval(stepTimer);
+                        stepTimer = undefined;
+                    }
+
                     break;
+
                 case 32:
                     e.preventDefault();
                     goStep(stepNowIndex++);
                     break;
+
+                case 27:
+                    e.preventDefault();
+
+                    steps = steps.filter(step => step.light);
+
+                    break;
+                default:
+                    console.log(e.which);
             }
         });
     </script>
